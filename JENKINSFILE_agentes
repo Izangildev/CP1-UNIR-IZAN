@@ -1,0 +1,77 @@
+pipeline {
+    agent any
+
+    options { skipDefaultCheckout() }
+
+    stages {
+        stage('Get code') {
+            steps {
+                // Obtener codigo del repositorio
+                git 'https://github.com/anieto-unir/helloworld.git'
+                echo WORKSPACE
+                bat 'dir'
+                // Stashear el repo entero para poder usarlo en otro agente
+                stash name:'code', includes:'**'
+            }
+        }
+
+        stage('Build') {
+            steps {
+                echo 'Pyhton no se compila'
+            }
+        }
+
+        stage('Tests') {
+            parallel {
+                stage('Unit') {
+                    // Queremos usar el agente 2
+                    agent {label 'agent2'}
+                    steps {
+                        catchError(buildResult: 'UNSTABLE', stageResult: 'FAILURE') {
+                            unstash name:'code'
+                            bat '''
+                                dir
+                                set PYTHONPATH=.
+                                pytest --junitxml=result-unit.xml test\\unit
+                            '''
+                            // Stasheamos el resultado del test
+                            stash name:'unit-res', includes:'result-unit.xml'
+                        }
+                    }
+                }
+                
+                stage('Rest') {
+                    // Usamos el agent3
+                    agent {label 'agent3'}
+                    steps {
+                        catchError(buildResult: 'UNSTABLE', stageResult: 'FAILURE') {
+                            bat '''
+                                set FLASK_APP=app\\api.py
+                                start flask run
+                                start java -jar C:\\UNIR\\Ejercicios\\wiremock-jre8-standalone-2.28.0.jar --port 9090 --root-dir test\\wiremock
+                                
+                                ping -n 10 127.0.0.1
+                                
+                                pytest --junitxml=result-rest.xml test\\rest
+                            '''
+                        }
+
+                        stash name:'rest-res', includes:'result-rest.xml'
+                    }
+                }
+
+            }
+        }
+
+        stage('Results') {
+            // Stage para mostrar resultados
+            steps {
+                // Hay que unstashear los resultados.xml
+                unstash name:'unit-res'
+                unstash name:'rest-res'
+
+                junit 'result*.xml'
+            }
+        }
+    }
+}
