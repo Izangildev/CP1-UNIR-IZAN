@@ -67,13 +67,13 @@ class TestApi(unittest.TestCase):
     
     def test_api_divide_by_zero(self):
         url = f"{BASE_URL}/calc/divide/12/0"
-        response = urlopen(url, timeout=DEFAULT_TIMEOUT)
-        self.assertEqual(
-            response.status, 406, f"Error en la petición API a {url}"
-        )
-        self.assertEqual(
-            response.read().decode(), "ERROR DIVIDE /0", "El mensaje de error por división entre 0 no coincide"
-        ) 
+        try:
+            response = urlopen(url, timeout=DEFAULT_TIMEOUT)
+            # Si llega aquí, la API no devolvió un error, fallamos el test
+            self.fail(f"Expected HTTPError 406, got {response.status}")
+        except HTTPError as e:
+            self.assertEqual(e.code, 406, f"Expected 406, got {e.code}")
+            self.assertEqual(e.read().decode(), "ERROR DIVIDE /0")
     
 
 if __name__ == "__main__":  # pragma: no cover
