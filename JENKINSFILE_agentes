@@ -7,7 +7,8 @@ pipeline {
         stage('Get code') {
             steps {
                 // Obtener codigo del repositorio
-                git 'https://github.com/Izangildev/CP1-UNIR-IZAN.git'
+
+                checkout scm
                 echo WORKSPACE
                 bat 'dir'
                 // Stashear el repo entero para poder usarlo en otro agente
