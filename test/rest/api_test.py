@@ -64,7 +64,7 @@ class TestApi(unittest.TestCase):
         self.assertEqual(
             response.read().decode(), "4.0", "ERROR ADD"
         ) 
-    '''
+    
     def test_api_divide_by_zero(self):
         url = f"{BASE_URL}/calc/divide/12/0"
         response = urlopen(url, timeout=DEFAULT_TIMEOUT)
@@ -74,7 +74,7 @@ class TestApi(unittest.TestCase):
         self.assertEqual(
             response.read().decode(), "ERROR DIVIDE /0", "El mensaje de error por división entre 0 no coincide"
         ) 
-    '''
+    
 
 if __name__ == "__main__":  # pragma: no cover
     unittest.main()
