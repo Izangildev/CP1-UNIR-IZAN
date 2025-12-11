@@ -7,7 +7,7 @@ pipeline {
         stage('Get code') {
             steps {
                 // Obtener codigo del repositorio
-                git 'https://github.com/anieto-unir/helloworld.git'
+                git 'https://github.com/Izangildev/CP1-UNIR-IZAN.git'
                 echo WORKSPACE
                 bat 'dir'
                 // Stashear el repo entero para poder usarlo en otro agente
