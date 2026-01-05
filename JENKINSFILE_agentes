@@ -15,11 +15,6 @@ pipeline {
             }
         }
 
-        stage('Build') {
-            steps {
-                echo 'Pyhton no se compila'
-            }
-        }
 
         stage('Tests') {
             parallel {
