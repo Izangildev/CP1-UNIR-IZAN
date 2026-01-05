@@ -22,7 +22,7 @@ pipeline {
                                         set PYTHONPATH=.
                                         pytest --junitxml=result-unit.xml test\\unit
                                     '''
-                                    junit ''
+                                    junit 'result-unit.xml'
                                 }
                             }
                 }
@@ -36,16 +36,11 @@ pipeline {
                                 start flask run
                                 pytest --junitxml=result-rest.xml test\\rest
                             '''
+                            junit 'result-rest.xml'
                         }
                     }
                 }        
             }
-        }
-        
-        stage ('Results') {
-            steps {
-                junit 'result*.xml'
-            }
-        }        
+        }   
      }
 }
