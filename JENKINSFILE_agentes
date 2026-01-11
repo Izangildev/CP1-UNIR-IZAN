@@ -1,72 +1,138 @@
+/*
+LABELS DE CADA AGENTE:
+agent2 (4 executors en vez de 3) --> agent2, multiexecutor, testing
+agent3 --> agent3, testing, python
+agent4 --> agent4, python
+*/
+
+def echoEnv() {
+    bat 'whoami'
+    echo WORKSPACE
+}
+
 pipeline {
     agent any
 
-    options { skipDefaultCheckout() }
-
     stages {
-        stage('Get code') {
+        stage('Get Code') {
             steps {
-                // Obtener codigo del repositorio
+                // Obtener código del repo
+                echoEnv()
                 git 'https://github.com/Izangildev/CP1-UNIR-IZAN.git'
-                echo WORKSPACE
-                bat 'dir'
-                // Stashear el repo entero para poder usarlo en otro agente
-                stash name:'code', includes:'**'
+
+                stash name: 'code', includes: '**'
             }
         }
-
-
+        
         stage('Tests') {
             parallel {
                 stage('Unit') {
-                    // Queremos usar el agente 2
-                    agent {label 'agent2'}
+                    agent {label 'testing'}
                     steps {
-                        catchError(buildResult: 'UNSTABLE', stageResult: 'FAILURE') {
-                            unstash name:'code'
+                        catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
+                            echoEnv()
+                            unstash name: 'code'
                             bat '''
-                                dir
-                                set PYTHONPATH=.
-                                pytest --junitxml=result-unit.xml test\\unit
+                                set PYTHONPATH=%WORKSPACE%
+                                coverage run --branch --source=app --omit=app\\__init__.py,app\\api.py -m pytest --junitxml=result-unit.xml test\\unit
+                                coverage xml
                             '''
-                            // Stasheamos el resultado del test
-                            stash name:'unit-res', includes:'result-unit.xml'
+                            stash name:'coverage-report', includes:'coverage.xml'
                         }
+                        junit 'result-unit.xml'
                     }
                 }
                 
                 stage('Rest') {
-                    // Usamos el agent3
-                    agent {label 'agent3'}
+                    agent {label 'testing'}
                     steps {
-                        catchError(buildResult: 'UNSTABLE', stageResult: 'FAILURE') {
-                            unstash name:'code'
+                        catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
+                            echoEnv()
+                            unstash name: 'code'
                             bat '''
                                 set FLASK_APP=app\\api.py
                                 start flask run
-                                start java -jar C:\\Users\\izang\\Desktop\\UNIR\\wiremock\\wiremock-standalone-4.0.0-beta.22.jar --port 9090 --root-dir test\\wiremock
-                                
-                                ping -n 15 127.0.0.1
-                                
+                                ping -n 6 127.0.0.1 > nul
                                 pytest --junitxml=result-rest.xml test\\rest
                             '''
                         }
-
-                        stash name:'rest-res', includes:'result-rest.xml'
+                         junit 'result-rest.xml'
                     }
-                }
-
+                }        
             }
         }
 
-        stage('Results') {
-            // Stage para mostrar resultados
+        stage('Analysis') {
+            parallel {
+                stage('Static') {
+                    agent {label 'python'}
+                    steps {
+                        echoEnv()
+                        unstash name: 'code'
+                        bat '''
+                            flake8 --exit-zero --format=pylint app >flake8.out
+                        '''
+                        catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
+                            recordIssues tools: [flake8(name: 'Flake8', pattern: 'flake8.out')], qualityGates: [
+                                [threshold: 8, type: 'TOTAL', unstable: true],   // 8 o más --> amarillo
+                                [threshold: 10, type: 'TOTAL', unstable: false]    // 10 o más --> rojo
+                            ]
+                        }
+                    }
+                }
+                
+                stage('Security') {
+                    agent {label 'testing'}
+                    steps{
+                        echoEnv()
+                        // Flag -ll para incluir brechas de baja severidad
+                        bat '''
+                            bandit --exit-zero -r app -o bandit.out -ll
+                        '''
+                        catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE'){
+                            recordIssues tools: [pyLint(name: 'Bandit', pattern: 'bandit.out')], qualityGates: [
+                                [threshold: 2, type: 'TOTAL', unstable: true], 
+                                [threshold: 4, type: 'TOTAL', unstable: false]
+                            ]
+                        }
+                    }
+                }
+            }
+        }
+        
+        
+        
+        stage('Coverage') {
+            agent {label 'testing'}
             steps {
-                // Hay que unstashear los resultados.xml
-                unstash name:'unit-res'
-                unstash name:'rest-res'
-
-                junit 'result*.xml'
+                echoEnv()
+                unstash name: 'coverage-report'
+                
+                catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE'){
+                    recordCoverage qualityGates: [
+                        [criticality: 'ERROR', integerThreshold: 85, metric: 'LINE', threshold: 85.0], 
+                        [integerThreshold: 95, metric: 'LINE', threshold: 95.0], 
+                        [criticality: 'ERROR', integerThreshold: 80, metric: 'BRANCH', threshold: 80.0], 
+                        [integerThreshold: 90, metric: 'BRANCH', threshold: 90.0]
+                    ], tools: [
+                        [parser: 'COBERTURA', pattern: 'coverage.xml']
+                    ]
+                }
+            }
+        }
+        
+        stage('Performance') {
+            agent {label 'multiexecutor'}
+            steps {
+                echoEnv()
+                unstash name: 'code'
+                bat '''
+                    set FLASK_APP=app\\api.py
+                    start flask run
+                    ping -n 5 127.0.0.1 
+                    jmeter -n -t test\\jmeter\\flask.jmx -f -l flask.jtl
+                '''
+                perfReport sourceDataFiles: 'flask.jtl'
             }
         }
     }
