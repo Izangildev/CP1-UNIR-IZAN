@@ -1,0 +1,382 @@
+Lanzada por el usuario admin
+
+[Pipeline] Start of Pipeline
+[Pipeline] node
+Running on agent2
+ in C:\Users\izang\Desktop\UNIR\Jenkins_Agents\agent2\workspace\O25\CP1.2 Reto 2
+[Pipeline] {
+[Pipeline] stage
+[Pipeline] { (Get Code)
+[Pipeline] bat
+
+C:\Users\izang\Desktop\UNIR\Jenkins_Agents\agent2\workspace\O25\CP1.2 Reto 2>whoami
+acer-izan\izang
+[Pipeline] echo
+C:\Users\izang\Desktop\UNIR\Jenkins_Agents\agent2\workspace\O25\CP1.2 Reto 2
+[Pipeline] git
+Selected Git installation does not exist. Using Default
+The recommended git tool is: NONE
+No credentials specified
+Fetching changes from the remote Git repository
+Checking out Revision 404fb1b4c36ecdf0087ece6dfe6a6d802310da9e (refs/remotes/origin/master)
+ > git.exe rev-parse --resolve-git-dir C:\Users\izang\Desktop\UNIR\Jenkins_Agents\agent2\workspace\O25\CP1.2 Reto 2\.git # timeout=10
+ > git.exe config remote.origin.url https://github.com/Izangildev/CP1-UNIR-IZAN.git # timeout=10
+Fetching upstream changes from https://github.com/Izangildev/CP1-UNIR-IZAN.git
+ > git.exe --version # timeout=10
+ > git --version # 'git version 2.51.0.windows.2'
+ > git.exe fetch --tags --force --progress -- https://github.com/Izangildev/CP1-UNIR-IZAN.git +refs/heads/*:refs/remotes/origin/* # timeout=10
+ > git.exe rev-parse "refs/remotes/origin/master^{commit}" # timeout=10
+ > git.exe config core.sparsecheckout # timeout=10
+Commit message: "CP.1-2 reto 1 completado, fichero JENKINSFILE"
+ > git.exe checkout -f 404fb1b4c36ecdf0087ece6dfe6a6d802310da9e # timeout=10
+ > git.exe branch -a -v --no-abbrev # timeout=10
+ > git.exe branch -D master # timeout=10
+ > git.exe checkout -b master 404fb1b4c36ecdf0087ece6dfe6a6d802310da9e # timeout=10
+ > git.exe rev-list --no-walk 404fb1b4c36ecdf0087ece6dfe6a6d802310da9e # timeout=10
+[Pipeline] stash
+Stashed 15 file(s)
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] stage
+[Pipeline] { (Tests)
+[Pipeline] parallel
+[Pipeline] { (Branch: Unit)
+[Pipeline] { (Branch: Rest)
+[Pipeline] stage
+[Pipeline] { (Unit)
+[Pipeline] stage
+[Pipeline] { (Rest)
+[Pipeline] node
+Running on agent2
+ in C:\Users\izang\Desktop\UNIR\Jenkins_Agents\agent2\workspace\O25\CP1.2 Reto 2@2
+[Pipeline] node
+Running on agent3
+ in C:\Users\izang\Desktop\UNIR\Jenkins_Agents\agent3\workspace\O25\CP1.2 Reto 2
+[Pipeline] {
+[Pipeline] {
+[Pipeline] catchError
+[Pipeline] {
+[Pipeline] catchError
+[Pipeline] {
+[Pipeline] bat
+[Pipeline] bat
+
+C:\Users\izang\Desktop\UNIR\Jenkins_Agents\agent2\workspace\O25\CP1.2 Reto 2@2>whoami
+acer-izan\izang
+[Pipeline] echo
+C:\Users\izang\Desktop\UNIR\Jenkins_Agents\agent2\workspace\O25\CP1.2 Reto 2@2
+[Pipeline] unstash
+
+C:\Users\izang\Desktop\UNIR\Jenkins_Agents\agent3\workspace\O25\CP1.2 Reto 2>whoami
+acer-izan\izang
+[Pipeline] bat
+[Pipeline] echo
+C:\Users\izang\Desktop\UNIR\Jenkins_Agents\agent3\workspace\O25\CP1.2 Reto 2
+[Pipeline] unstash
+[Pipeline] bat
+
+C:\Users\izang\Desktop\UNIR\Jenkins_Agents\agent2\workspace\O25\CP1.2 Reto 2@2>set PYTHONPATH=C:\Users\izang\Desktop\UNIR\Jenkins_Agents\agent2\workspace\O25\CP1.2 Reto 2@2 
+
+C:\Users\izang\Desktop\UNIR\Jenkins_Agents\agent2\workspace\O25\CP1.2 Reto 2@2>coverage run --branch --source=app --omit=app\__init__.py,app\api.py -m pytest --junitxml=result-unit.xml test\unit 
+
+C:\Users\izang\Desktop\UNIR\Jenkins_Agents\agent3\workspace\O25\CP1.2 Reto 2>set FLASK_APP=app\api.py 
+
+C:\Users\izang\Desktop\UNIR\Jenkins_Agents\agent3\workspace\O25\CP1.2 Reto 2>start flask run 
+
+C:\Users\izang\Desktop\UNIR\Jenkins_Agents\agent3\workspace\O25\CP1.2 Reto 2>ping -n 6 127.0.0.1  1>nul 
+============================= test session starts =============================
+platform win32 -- Python 3.11.9, pytest-9.0.1, pluggy-1.6.0
+rootdir: C:\Users\izang\Desktop\UNIR\Jenkins_Agents\agent2\workspace\O25\CP1.2 Reto 2@2
+configfile: pytest.ini
+collected 10 items
+
+test\unit\calc_test.py ........                                          [ 80%]
+test\unit\util_test.py ..                                                [100%]
+
+- generated xml file: C:\Users\izang\Desktop\UNIR\Jenkins_Agents\agent2\workspace\O25\CP1.2 Reto 2@2\result-unit.xml -
+============================= 10 passed in 0.12s ==============================
+
+C:\Users\izang\Desktop\UNIR\Jenkins_Agents\agent2\workspace\O25\CP1.2 Reto 2@2>coverage xml 
+Wrote XML report to coverage.xml
+[Pipeline] stash
+Stashed 1 file(s)
+[Pipeline] }
+[Pipeline] // catchError
+[Pipeline] junit
+Grabando resultados de tests
+[Checks API] No suitable checks publisher found.
+[Pipeline] }
+[Pipeline] // node
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] }
+
+C:\Users\izang\Desktop\UNIR\Jenkins_Agents\agent3\workspace\O25\CP1.2 Reto 2>pytest --junitxml=result-rest.xml test\rest 
+============================= test session starts =============================
+platform win32 -- Python 3.11.9, pytest-9.0.1, pluggy-1.6.0
+rootdir: C:\Users\izang\Desktop\UNIR\Jenkins_Agents\agent3\workspace\O25\CP1.2 Reto 2
+configfile: pytest.ini
+collected 2 items
+
+test\rest\api_test.py ..                                                 [100%]
+
+- generated xml file: C:\Users\izang\Desktop\UNIR\Jenkins_Agents\agent3\workspace\O25\CP1.2 Reto 2\result-rest.xml -
+============================== 2 passed in 2.16s ==============================
+[Pipeline] }
+[Pipeline] // catchError
+[Pipeline] junit
+Grabando resultados de tests
+[Checks API] No suitable checks publisher found.
+[Pipeline] }
+[Pipeline] // node
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] }
+[Pipeline] // parallel
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] stage
+[Pipeline] { (Analysis)
+[Pipeline] parallel
+[Pipeline] { (Branch: Static)
+[Pipeline] { (Branch: Security)
+[Pipeline] stage
+[Pipeline] { (Static)
+[Pipeline] stage
+[Pipeline] { (Security)
+[Pipeline] node
+Running on agent4
+ in C:\Users\izang\Desktop\UNIR\Jenkins_Agents\agent4\workspace\O25\CP1.2 Reto 2
+[Pipeline] node
+Running on agent2
+ in C:\Users\izang\Desktop\UNIR\Jenkins_Agents\agent2\workspace\O25\CP1.2 Reto 2@2
+[Pipeline] {
+[Pipeline] {
+[Pipeline] bat
+[Pipeline] bat
+
+C:\Users\izang\Desktop\UNIR\Jenkins_Agents\agent4\workspace\O25\CP1.2 Reto 2>whoami
+acer-izan\izang
+[Pipeline] echo
+C:\Users\izang\Desktop\UNIR\Jenkins_Agents\agent4\workspace\O25\CP1.2 Reto 2
+[Pipeline] unstash
+
+C:\Users\izang\Desktop\UNIR\Jenkins_Agents\agent2\workspace\O25\CP1.2 Reto 2@2>whoami
+acer-izan\izang
+[Pipeline] bat
+[Pipeline] echo
+C:\Users\izang\Desktop\UNIR\Jenkins_Agents\agent2\workspace\O25\CP1.2 Reto 2@2
+[Pipeline] bat
+
+C:\Users\izang\Desktop\UNIR\Jenkins_Agents\agent4\workspace\O25\CP1.2 Reto 2>flake8 --exit-zero --format=pylint app  1>flake8.out 
+
+C:\Users\izang\Desktop\UNIR\Jenkins_Agents\agent2\workspace\O25\CP1.2 Reto 2@2>bandit --exit-zero -r app -o bandit.out -ll 
+[main]	INFO	profile include tests: None
+[main]	INFO	profile exclude tests: None
+[main]	INFO	cli include tests: None
+[main]	INFO	cli exclude tests: None
+[main]	INFO	running on Python 3.11.9
+[text]	INFO	Text output written to file: bandit.out
+[Pipeline] catchError
+[Pipeline] {
+[Pipeline] recordIssues
+[Bandit] Searching for all files in 'C:\Users\izang\Desktop\UNIR\Jenkins_Agents\agent2\workspace\O25\CP1.2 Reto 2@2' that match the pattern 'bandit.out'
+[Bandit] Traversing of symbolic links: enabled
+[Bandit] -> found 1 file
+[Bandit] Successfully parsed file C:\Users\izang\Desktop\UNIR\Jenkins_Agents\agent2\workspace\O25\CP1.2 Reto 2@2\bandit.out
+[Bandit] -> found 0 issues (skipped 0 duplicates)
+[Bandit] Successfully processed file 'bandit.out'
+[Bandit] Skipping post processing
+[Bandit] No filter has been set, publishing all 0 issues
+[Bandit] Repository miner is not configured, skipping repository mining
+[Bandit] Reference build recorder is not configured
+[Bandit] No valid reference build found
+[Bandit] All reported issues will be considered outstanding
+[Bandit] Evaluating quality gates
+[Bandit] -> All quality gates have been passed
+[Bandit] -> Details for each quality gate:
+[Bandit]    - [Total (any severity)]: ≪Correcto≫ - (Actual value: 0, Quality gate: 2,00)
+[Bandit]    - [Total (any severity)]: ≪Correcto≫ - (Actual value: 0, Quality gate: 4,00)
+[Bandit] Health report is disabled - skipping
+[Bandit] Created analysis result for 0 issues (found 0 new issues, fixed 0 issues)
+[Bandit] Attaching ResultAction with ID 'pylint' to build 'O25/CP1.2 Reto 2 #4'.
+[Checks API] No suitable checks publisher found.
+[Pipeline] }
+[Pipeline] // catchError
+[Pipeline] }
+[Pipeline] // node
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] }
+[Pipeline] catchError
+[Pipeline] {
+[Pipeline] recordIssues
+[Flake8] Searching for all files in 'C:\Users\izang\Desktop\UNIR\Jenkins_Agents\agent4\workspace\O25\CP1.2 Reto 2' that match the pattern 'flake8.out'
+[Flake8] Traversing of symbolic links: enabled
+[Flake8] -> found 1 file
+[Flake8] Successfully parsed file C:\Users\izang\Desktop\UNIR\Jenkins_Agents\agent4\workspace\O25\CP1.2 Reto 2\flake8.out
+[Flake8] -> found 9 issues (skipped 0 duplicates)
+[Flake8] Successfully processed file 'flake8.out'
+[Flake8] Post processing issues on 'agent4' with source code encoding 'UTF-8'
+[Flake8] Creating SCM blamer to obtain author and commit information for affected files
+[Flake8] -> No blamer installed yet. You need to install the 'git-forensics' plugin to enable blaming for Git.
+[Flake8] Resolving file names for all issues in workspace 'C:\Users\izang\Desktop\UNIR\Jenkins_Agents\agent4\workspace\O25\CP1.2 Reto 2'
+[Flake8] -> resolved paths in source directory (2 found, 0 not found)
+[Flake8] Resolving module names from module definitions (build.xml, pom.xml, or Manifest.mf files)
+[Flake8] -> resolved module names for 9 issues
+[Flake8] Resolving package names (or namespaces) by parsing the affected files
+[Flake8] -> resolved package names of 2 affected files
+[Flake8] No filter has been set, publishing all 9 issues
+[Flake8] Creating fingerprints for all affected code blocks to track issues over different builds
+[Flake8] -> created fingerprints for 9 issues (skipped 0 issues)
+[Flake8] Copying affected files to Jenkins' build folder 'C:\ProgramData\Jenkins\.jenkins\jobs\O25\jobs\CP1.2 Reto 2\builds\4\files-with-issues'
+[Flake8] -> 2 copied, 0 not in workspace, 0 not-found, 0 with I/O error
+[Flake8] Skipping cleaning of source code files in old builds
+[Flake8] Repository miner is not configured, skipping repository mining
+[Flake8] Reference build recorder is not configured
+[Flake8] No valid reference build found
+[Flake8] All reported issues will be considered outstanding
+[Flake8] Evaluating quality gates
+[Flake8] -> Some quality gates have been missed: overall result is UNSTABLE
+[Flake8] -> Details for each quality gate:
+[Flake8]    - [Total (any severity)]: ≪Inestable≫ - (Actual value: 9, Quality gate: 8,00)
+[Flake8]    - [Total (any severity)]: ≪Correcto≫ - (Actual value: 9, Quality gate: 10,00)
+[Flake8] Health report is disabled - skipping
+[Flake8] Created analysis result for 9 issues (found 0 new issues, fixed 0 issues)
+[Flake8] Attaching ResultAction with ID 'flake8' to build 'O25/CP1.2 Reto 2 #4'.
+[Checks API] No suitable checks publisher found.
+[Pipeline] }
+[Pipeline] // catchError
+[Pipeline] }
+[Pipeline] // node
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] }
+[Pipeline] // parallel
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] stage
+[Pipeline] { (Coverage)
+[Pipeline] node
+Running on agent2
+ in C:\Users\izang\Desktop\UNIR\Jenkins_Agents\agent2\workspace\O25\CP1.2 Reto 2@2
+[Pipeline] {
+[Pipeline] bat
+
+C:\Users\izang\Desktop\UNIR\Jenkins_Agents\agent2\workspace\O25\CP1.2 Reto 2@2>whoami
+acer-izan\izang
+[Pipeline] echo
+C:\Users\izang\Desktop\UNIR\Jenkins_Agents\agent2\workspace\O25\CP1.2 Reto 2@2
+[Pipeline] unstash
+[Pipeline] catchError
+[Pipeline] {
+[Pipeline] recordCoverage
+[Coverage] Recording coverage results
+[Coverage] Creating parser for Cobertura Coverage Reports
+[Coverage] Searching for all files in 'C:\Users\izang\Desktop\UNIR\Jenkins_Agents\agent2\workspace\O25\CP1.2 Reto 2@2' that match the pattern 'coverage.xml'
+[Coverage] Traversing of symbolic links: enabled
+[Coverage] -> found 1 file
+[Coverage] Successfully parsed file 'C:/Users/izang/Desktop/UNIR/Jenkins_Agents/agent2/workspace/O25/CP1.2 Reto 2@2/coverage.xml'
+[Coverage] MODULE: 100.00% (1/1)
+[Coverage] PACKAGE: 100.00% (1/1)
+[Coverage] FILE: 100.00% (2/2)
+[Coverage] CLASS: 100.00% (2/2)
+[Coverage] LINE: 96.77% (30/31)
+[Coverage] BRANCH: 83.33% (5/6)
+[Coverage] LOC: 31
+[Coverage] CYCLOMATIC_COMPLEXITY: 0
+[Coverage] Successfully processed file 'coverage.xml'
+[Coverage] Resolving source code files...
+[Coverage] Searching for source code files in 'C:/Users/izang/Desktop/UNIR/Jenkins_Agents/agent2/workspace/O25/CP1.2 Reto 2@2/src/main/java'
+[Coverage] -> resolved absolute paths for all 2 source files
+[Checks API] No suitable checks publisher found.
+[Coverage] Obtaining result action of reference build
+[Coverage] Reference build recorder is not configured
+[Coverage] -> Found no reference build
+[Coverage] Evaluating quality gates
+[Coverage] -> Some quality gates have been missed: overall result is UNSTABLE
+[Coverage] -> Details for each quality gate:
+[Coverage]    - [Overall project - Line Coverage]: ≪Correcto≫ - (Actual value: 96.77%, Quality gate: 85,00)
+[Coverage]    - [Overall project - Line Coverage]: ≪Correcto≫ - (Actual value: 96.77%, Quality gate: 95,00)
+[Coverage]    - [Overall project - Branch Coverage]: ≪Correcto≫ - (Actual value: 83.33%, Quality gate: 80,00)
+[Coverage]    - [Overall project - Branch Coverage]: ≪Inestable≫ - (Actual value: 83.33%, Quality gate: 90,00)
+[Coverage] Executing source code painting...
+[Coverage] Painting 2 source files on agent
+[Coverage] -> finished painting successfully
+[Coverage] -> zipping sources from folder 'C:\Users\izang\Desktop\UNIR\Jenkins_Agents\agent2\workspace\O25\CP1.2 Reto 2@2\coverage' as 'C:\Users\izang\Desktop\UNIR\Jenkins_Agents\agent2\workspace\O25\CP1.2 Reto 2@2\coverage-sources.zip'
+[Coverage] Copying painted sources from agent to build folder
+[Coverage] -> extracting...
+[Coverage] -> done
+[Coverage] Deleting source code files of build #3
+[Coverage] Finished coverage processing - adding the action to the build...
+[Pipeline] }
+[Pipeline] // catchError
+[Pipeline] }
+[Pipeline] // node
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] stage
+[Pipeline] { (Performance)
+[Pipeline] node
+Running on agent2
+ in C:\Users\izang\Desktop\UNIR\Jenkins_Agents\agent2\workspace\O25\CP1.2 Reto 2@2
+[Pipeline] {
+[Pipeline] bat
+
+C:\Users\izang\Desktop\UNIR\Jenkins_Agents\agent2\workspace\O25\CP1.2 Reto 2@2>whoami
+acer-izan\izang
+[Pipeline] echo
+C:\Users\izang\Desktop\UNIR\Jenkins_Agents\agent2\workspace\O25\CP1.2 Reto 2@2
+[Pipeline] unstash
+[Pipeline] bat
+
+C:\Users\izang\Desktop\UNIR\Jenkins_Agents\agent2\workspace\O25\CP1.2 Reto 2@2>set FLASK_APP=app\api.py 
+
+C:\Users\izang\Desktop\UNIR\Jenkins_Agents\agent2\workspace\O25\CP1.2 Reto 2@2>start flask run 
+
+C:\Users\izang\Desktop\UNIR\Jenkins_Agents\agent2\workspace\O25\CP1.2 Reto 2@2>ping -n 5 127.0.0.1  
+
+Haciendo ping a 127.0.0.1 con 32 bytes de datos:
+Respuesta desde 127.0.0.1: bytes=32 tiempo<1m TTL=128
+Respuesta desde 127.0.0.1: bytes=32 tiempo<1m TTL=128
+Respuesta desde 127.0.0.1: bytes=32 tiempo<1m TTL=128
+Respuesta desde 127.0.0.1: bytes=32 tiempo<1m TTL=128
+Respuesta desde 127.0.0.1: bytes=32 tiempo<1m TTL=128
+
+Estad�sticas de ping para 127.0.0.1:
+    Paquetes: enviados = 5, recibidos = 5, perdidos = 0
+    (0% perdidos),
+Tiempos aproximados de ida y vuelta en milisegundos:
+    M�nimo = 0ms, M�ximo = 0ms, Media = 0ms
+
+C:\Users\izang\Desktop\UNIR\Jenkins_Agents\agent2\workspace\O25\CP1.2 Reto 2@2>jmeter -n -t test\jmeter\flask.jmx -f -l flask.jtl 
+WARN StatusConsoleListener The use of package scanning to locate plugins is deprecated and will be removed in a future release
+WARN StatusConsoleListener The use of package scanning to locate plugins is deprecated and will be removed in a future release
+WARN StatusConsoleListener The use of package scanning to locate plugins is deprecated and will be removed in a future release
+WARN StatusConsoleListener The use of package scanning to locate plugins is deprecated and will be removed in a future release
+Creating summariser <summary>
+Created the tree successfully using test\jmeter\flask.jmx
+Starting standalone test @ 2026 Jan 11 12:24:00 CET (1768130640836)
+Waiting for possible Shutdown/StopTestNow/HeapDump/ThreadDump message on port 4445
+summary +      1 in 00:00:00 =    4.1/s Avg:    41 Min:    41 Max:    41 Err:     0 (0.00%) Active: 1 Started: 1 Finished: 0
+summary +     79 in 00:00:01 =  120.8/s Avg:     3 Min:     2 Max:     7 Err:     0 (0.00%) Active: 0 Started: 5 Finished: 5
+summary =     80 in 00:00:01 =   89.4/s Avg:     4 Min:     2 Max:    41 Err:     0 (0.00%)
+Tidying up ...    @ 2026 Jan 11 12:24:01 CET (1768130641865)
+... end of run
+[Pipeline] perfReport
+Creating parser with percentiles:'0,50,90,95,100,' filterRegex:null
+Performance: Recording JMeterCsv reports 'flask.jtl'
+Performance: JMeterCsv copying reports to master, files '[C:\Users\izang\Desktop\UNIR\Jenkins_Agents\agent2\workspace\O25\CP1.2 Reto 2@2\flask.jtl]'
+Performance: JMeterCsv parsing local reports '[C:\ProgramData\Jenkins\.jenkins\jobs\O25\jobs\CP1.2 Reto 2\builds\4\performance-reports\JMeterCSV\flask.jtl]'
+Performance: Parsing report file 'C:\ProgramData\Jenkins\.jenkins\jobs\O25\jobs\CP1.2 Reto 2\builds\4\performance-reports\JMeterCSV\flask.jtl' with filterRegex 'null'.
+Performance: No threshold configured for making the test unstable
+Performance: No threshold configured for making the test failure
+Performance: File flask.jtl reported 0.0% of errors [SUCCESS]. Build status is: UNSTABLE
+[Pipeline] }
+[Pipeline] // node
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] }
+[Pipeline] // node
+[Pipeline] End of Pipeline
+Finished: UNSTABLE
