@@ -76,14 +76,17 @@ pipeline {
             steps {
                 // De momento dejo el stash/unstash comentado --> solo 1 agente
                 // unstash name:'coverage-report'
-                recordCoverage qualityGates: [
-                    [criticality: 'ERROR', integerThreshold: 85, metric: 'LINE', threshold: 85.0], 
-                    [integerThreshold: 95, metric: 'LINE', threshold: 95.0], 
-                    [criticality: 'ERROR', integerThreshold: 80, metric: 'BRANCH', threshold: 80.0], 
-                    [integerThreshold: 90, metric: 'BRANCH', threshold: 90.0]
-                ], tools: [
-                    [parser: 'COBERTURA', pattern: 'coverage.xml']
-                ]
+                
+                catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE'){
+                    recordCoverage qualityGates: [
+                        [criticality: 'ERROR', integerThreshold: 85, metric: 'LINE', threshold: 85.0], 
+                        [integerThreshold: 95, metric: 'LINE', threshold: 95.0], 
+                        [criticality: 'ERROR', integerThreshold: 80, metric: 'BRANCH', threshold: 80.0], 
+                        [integerThreshold: 90, metric: 'BRANCH', threshold: 90.0]
+                    ], tools: [
+                        [parser: 'COBERTURA', pattern: 'coverage.xml']
+                    ]
+                }
             }
         }
         
